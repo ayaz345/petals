@@ -70,18 +70,13 @@ class DummyCustomSequenceManager(RemoteSequenceManager):
         rpc_info = super().rpc_info
         dims = (2048, 1024)
         compressed_input_schema = BatchTensorDescriptor(dims, compression=runtime_pb2.CompressionType.FLOAT16)
-        rpc_info["forward_schema"] = (compressed_input_schema,), dict()  # (args, kwargs)
+        rpc_info["forward_schema"] = (compressed_input_schema,), {}
         return rpc_info
 
     def get_request_metadata(self, protocol: str, *args, **kwargs):
         metadata = super().get_request_metadata(protocol, *args, **kwargs)
-        if protocol == "rpc_forward":
+        if protocol in {"rpc_forward", "rpc_backward"}:
             metadata["output_compression"] = (runtime_pb2.CompressionType.FLOAT16,)
-        elif protocol == "rpc_backward":
-            metadata["output_compression"] = (runtime_pb2.CompressionType.FLOAT16,)
-            # FIXME: Initially, we used CompressionType.BLOCKWISE_8BIT for rpc_backward() here.
-            # This is currently broken since hivemind==1.1.8 is not compatible with bitsandbytes==0.39.1.
-            # Please revert to BLOCKWISE_8BIT once this is fixed: https://github.com/learning-at-home/hivemind/issues/572
         return metadata
 
 

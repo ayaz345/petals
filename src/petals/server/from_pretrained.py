@@ -128,7 +128,7 @@ def _load_state_dict_from_repo(
             for param_name, param in shard_state_dict.items()
             if param_name.startswith(block_prefix)
         }  # Remove unused parameters from memory
-        state_dict.update(shard_state_dict)
+        state_dict |= shard_state_dict
     return state_dict
 
 

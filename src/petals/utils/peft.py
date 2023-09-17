@@ -32,8 +32,8 @@ def check_peft_repository(repo_id: str) -> bool:
 
 
 def load_specific_module(block_idx: int, filepath: str, framework: str = "pt", device: Optional[int] = None):
-    tensors = dict()
-    is_tensors_found = dict()
+    tensors = {}
+    is_tensors_found = {}
     common_layer_patter_re = (
         ".+\." + "".join(f"({common_name})?" for common_name in COMMON_LAYERS_PATTERN) + f"\.({block_idx})?\..+"
     )
